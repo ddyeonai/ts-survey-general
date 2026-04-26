@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>TS 고객만족도 조사</title>
+<style>
+html{overflow-x:hidden}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic','Apple SD Gothic Neo',sans-serif;background:linear-gradient(135deg,#f0f4f8,#e8eef5);color:#1a2332;min-height:100vh;overflow-x:hidden;max-width:100vw}
+.container{max-width:720px;margin:0 auto;padding:0 16px 40px;overflow-x:hidden}
+.header{background:white;padding:36px 20px 32px;text-align:center;margin:0 -16px 24px;box-shadow:0 4px 12px rgba(0,0,0,0.08);border-bottom:4px solid #003d82}
+.ts-logo{font-size:80px;font-weight:900;letter-spacing:-2px;line-height:1;margin-bottom:18px;font-family:'Arial Black','Malgun Gothic',sans-serif;display:inline-block;padding:0 8px}
+.ts-logo .t{background:linear-gradient(135deg,#ff8c00,#ffa500,#ff6b00);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.ts-logo .s{background:linear-gradient(135deg,#1e3a8a,#0056b3,#003d82);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.center-name{font-size:19px;font-weight:700;color:#2d3748;margin-bottom:20px}
+.header h1{font-size:28px;font-weight:800;color:#003d82;letter-spacing:-1px;padding:16px 36px 0;border-top:2px solid #e2e8f0;display:inline-block}
+.intro-box{background:white;padding:20px;border-radius:12px;margin-bottom:20px;border-left:4px solid #0056b3;box-shadow:0 2px 8px rgba(0,0,0,0.04);font-size:14px;color:#4a5568;line-height:1.6}
+.section{background:white;border-radius:12px;padding:24px 20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+.section-title{font-size:17px;font-weight:700;color:#003d82;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.section-num{background:#003d82;color:white;width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.section-desc{font-size:14px;color:#718096;margin-bottom:20px;padding-left:36px}
+.question{margin-bottom:24px}
+.question:last-child{margin-bottom:0}
+.q-label{display:block;font-size:16px;font-weight:600;color:#2d3748;margin-bottom:12px;line-height:1.5}
+.required{color:#e53e3e;font-weight:700;margin-left:2px}
+input[type=number],input[type=date],select{width:100%;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:16px;font-family:inherit;background:white;color:#1a2332;-webkit-appearance:none;appearance:none}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23718096' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#0056b3;box-shadow:0 0 0 3px rgba(0,86,179,0.1)}
+textarea{width:100%;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:16px;font-family:inherit;background:white;color:#1a2332;resize:vertical;min-height:100px}
+.radio-group{display:flex;flex-direction:column;gap:10px}
+.radio-item{display:flex;align-items:center;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:8px;cursor:pointer;background:white;transition:border-color .15s,background .15s}
+.radio-item input[type=radio]{width:20px;height:20px;margin-right:12px;accent-color:#0056b3;flex-shrink:0}
+.radio-item.checked{border-color:#0056b3;background:#eff6ff}
+.radio-label{font-size:16px;color:#2d3748;flex:1;font-weight:500}
+.radio-row{display:flex;gap:10px}
+.radio-row .radio-item{flex:1}
+.exp-box{display:none;margin-top:12px;padding:16px;background:#fff8f0;border-radius:8px;border:1.5px solid #ffd9a8}
+.exp-box.show{display:block}
+.exp-row{display:flex;gap:10px;align-items:center}
+.exp-row label{font-size:15px;color:#4a5568;white-space:nowrap;font-weight:600}
+.exp-row input{flex:1;min-width:0;text-align:center}
+.exp-title{font-size:14px;font-weight:600;color:#2d3748;margin-bottom:10px}
+.rating-question{padding:20px 16px;background:#f7fafc;border-radius:10px;margin-bottom:16px}
+.rating-label{font-size:16px;font-weight:600;color:#2d3748;margin-bottom:14px;line-height:1.55}
+.rating-display{text-align:center;margin-bottom:14px;min-height:60px;display:flex;align-items:center;justify-content:center}
+.rating-hint{font-size:15px;color:#a0aec0;font-weight:500}
+.rating-score{font-size:52px;font-weight:900;line-height:1;letter-spacing:-2px;background:linear-gradient(135deg,#ff8c00,#003d82);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;display:none}
+.rating-score .unit{font-size:22px;font-weight:700;color:#003d82;-webkit-text-fill-color:#003d82;background:none}
+.slider-wrap{margin:4px 0 10px;padding:12px 0}
+.score-slider{-webkit-appearance:none;appearance:none;width:100%;height:12px;border-radius:12px;background:linear-gradient(to right,#fc8181 0%,#fbd38d 30%,#f6e05e 50%,#68d391 75%,#0056b3 100%);outline:none;cursor:pointer;display:block}
+.score-slider::-webkit-slider-thumb{-webkit-appearance:none;width:56px;height:56px;border-radius:50%;background:white center/contain no-repeat;border:none;cursor:pointer;box-shadow:0 3px 8px rgba(0,0,0,0.25);margin-top:-22px}
+.score-slider::-moz-range-thumb{width:56px;height:56px;border-radius:50%;background:white center/contain no-repeat;border:none;cursor:pointer;box-shadow:0 3px 8px rgba(0,0,0,0.25)}
+.slider-ticks{display:flex;justify-content:space-between;padding:0 2px;margin-top:4px}
+.slider-ticks span{font-size:13px;color:#718096;font-weight:600}
+.rating-legend{display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-top:6px}
+.rating-legend .low{color:#e53e3e}
+.rating-legend .high{color:#0056b3}
+.imp-cat{padding:18px 16px;background:#f7fafc;border-radius:10px;margin-bottom:14px}
+.imp-cat:last-child{margin-bottom:0}
+.imp-cat-title{font-size:16px;font-weight:700;color:#003d82;margin-bottom:12px}
+.imp-textarea{display:none;margin-top:12px}
+.imp-textarea.show{display:block}
+.etc-box{display:none;margin-top:12px}
+.etc-box.show{display:block}
+.error-msg{color:#e53e3e;font-size:14px;margin-top:8px;display:none;font-weight:600}
+.error-msg.show{display:block}
+.submit-btn{width:100%;padding:20px;background:linear-gradient(135deg,#003d82,#0056b3);color:white;border:none;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;margin-top:24px;box-shadow:0 4px 14px rgba(0,61,130,0.3);-webkit-appearance:none;touch-action:manipulation}
+.submit-btn:disabled{background:#a0aec0;cursor:not-allowed;box-shadow:none}
+.debug-box{margin-top:16px;padding:14px;background:#fff3cd;border-radius:8px;font-size:14px;color:#856404;display:none;word-break:break-all;line-height:1.6}
+.complete-screen{display:none;text-align:center;padding:60px 20px;background:white;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.06);margin-top:40px}
+.complete-screen.show{display:block}
+.complete-icon{width:80px;height:80px;background:linear-gradient(135deg,#003d82,#0056b3);border-radius:50%;margin:0 auto 24px;display:flex;align-items:center;justify-content:center;color:white;font-size:40px;box-shadow:0 8px 24px rgba(0,86,179,0.3)}
+.complete-screen h2{color:#003d82;font-size:24px;margin-bottom:12px}
+.complete-screen p{color:#4a5568;font-size:16px;line-height:1.7}
+.progress-bar{position:sticky;top:0;height:4px;background:#e2e8f0;z-index:100;margin:0 -16px}
+.progress-fill{height:100%;background:linear-gradient(90deg,#ff8c00,#003d82);width:0%;transition:width .3s}
+@media(max-width:400px){.ts-logo{font-size:68px;letter-spacing:-1px}.header h1{font-size:24px;padding-left:24px;padding-right:24px}.center-name{font-size:17px}.radio-label{font-size:15px}}
+</style>
+</head>
+<body>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<div class="container">
+  <div class="header">
+    <div class="ts-logo"><span class="t">T</span><span class="s">S</span></div>
+    <div class="center-name">상주교통안전체험교육센터</div>
+    <h1>고객만족도 조사</h1>
+  </div>
+
+  <div id="surveyForm">
+    <div class="intro-box">안녕하세요. 교통안전체험교육센터 교육에 참여해 주셔서 감사합니다.<br>더 나은 교육 서비스 제공을 위해 여러분의 소중한 의견을 들려주세요.</div>
+
+    <!-- 교육 정보 -->
+    <div class="section">
+      <div class="section-title"><span class="section-num">ⓘ</span>교육 정보</div>
+      <div class="section-desc">교육과정과 입교 일자를 선택해 주세요</div>
+      <div class="question">
+        <label class="q-label">교육과정<span class="required">*</span></label>
+        <select id="courseName">
+          <option value="">-- 교육과정을 선택해 주세요 --</option>
+          <option value="화물자격교육">화물자격교육</option>
+          <option value="신규버스운전자 양성교육">신규버스운전자 양성교육</option>
+          <option value="버스자격교육">버스자격교육</option>
+          <option value="버스심화교육">버스심화교육</option>
+          <option value="일반기본교육">일반기본교육</option>
+        </select>
+        <div class="error-msg" id="err-courseName">교육과정을 선택해 주세요</div>
+      </div>
+      <div class="question">
+        <label class="q-label">교육 입교 일자<span class="required">*</span></label>
+        <input type="date" id="eduDate">
+        <div class="error-msg" id="err-eduDate">교육 입교 일자를 선택해 주세요</div>
+      </div>
+    </div>
+
+    <!-- 1. 기초조사 -->
+    <div class="section">
+      <div class="section-title"><span class="section-num">1</span>기초조사</div>
+      <div class="section-desc">응답자에 관한 기본적인 사항입니다</div>
+      <div class="question">
+        <label class="q-label">연령<span class="required">*</span></label>
+        <input type="number" id="age" min="20" max="100" placeholder="만 나이 입력">
+        <div class="error-msg" id="err-age">연령을 입력해 주세요</div>
+      </div>
+      <div class="question">
+        <label class="q-label">성별<span class="required">*</span></label>
+        <div class="radio-row">
+          <label class="radio-item"><input type="radio" name="gender" value="1"><span class="radio-label">남자</span></label>
+          <label class="radio-item"><input type="radio" name="gender" value="2"><span class="radio-label">여자</span></label>
+        </div>
+        <div class="error-msg" id="err-gender">성별을 선택해 주세요</div>
+      </div>
+      <div class="question">
+        <label class="q-label">사업용 차량 운전경험<span class="required">*</span></label>
+        <div class="radio-group">
+          <label class="radio-item"><input type="radio" name="bizExp" value="1"><span class="radio-label">1. 택시</span></label>
+          <label class="radio-item"><input type="radio" name="bizExp" value="2"><span class="radio-label">2. 버스</span></label>
+          <label class="radio-item"><input type="radio" name="bizExp" value="3"><span class="radio-label">3. 화물</span></label>
+          <label class="radio-item"><input type="radio" name="bizExp" value="4"><span class="radio-label">4. 건설기계</span></label>
+          <label class="radio-item"><input type="radio" name="bizExp" value="5"><span class="radio-label">5. 타인에게 고용된 운전경력 (자가용 승용, 화물, 건설기계)</span></label>
+          <label class="radio-item"><input type="radio" name="bizExp" value="6"><span class="radio-label">6. 해당없음</span></label>
+        </div>
+        <div class="error-msg" id="err-bizExp">항목을 선택해 주세요</div>
+        <div class="exp-box" id="bizCareerBox">
+          <div class="exp-title">📌 사업용 운전경력 기간을 입력해 주세요</div>
+          <div class="exp-row">
+            <input type="number" id="bizYear" min="0" max="60" placeholder="0">
+            <label>년</label>
+            <input type="number" id="bizMonth" min="0" max="11" placeholder="0">
+            <label>개월</label>
+          </div>
+        </div>
+      </div>
+      <div class="question">
+        <label class="q-label">자가용 운전경력<span class="required">*</span></label>
+        <div class="exp-row">
+          <input type="number" id="privYear" min="0" max="80" placeholder="0">
+          <label>년</label>
+          <input type="number" id="privMonth" min="0" max="11" placeholder="0">
+          <label>개월</label>
+        </div>
+        <div class="error-msg" id="err-privCareer">자가용 운전경력을 입력해 주세요</div>
+      </div>
+    </div>
+
+    <!-- 2. 교육 전반 평가 -->
+    <div class="section">
+      <div class="section-title"><span class="section-num">2</span>교육 전반 평가</div>
+      <div class="section-desc">각 문항에 대해 0점(매우 불만족) ~ 10점(매우 만족)으로 평가해 주세요</div>
+      <button type="button" id="allSatisfiedBtn" style="display:block;margin:0 auto 16px;padding:10px 24px;background:linear-gradient(135deg,#003d82,#0056b3);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;-webkit-appearance:none;touch-action:manipulation">⭐ 모두 매우 만족 (10점)</button>
+      <div id="ratingContainer"></div>
+    </div>
+
+    <!-- 3. 의견 -->
+    <div class="section">
+      <div class="section-title"><span class="section-num">3</span>의견 및 개선사항</div>
+      <div class="section-desc">소중한 의견을 들려주세요</div>
+      <div class="question">
+        <label class="q-label">교육과정 중 가장 만족스러운 내용은 무엇입니까?<span class="required">*</span></label>
+        <div class="radio-group">
+          <label class="radio-item"><input type="radio" name="satisfied" value="체험교육"><span class="radio-label">1. 체험교육</span></label>
+          <label class="radio-item"><input type="radio" name="satisfied" value="교수진"><span class="radio-label">2. 교수진</span></label>
+          <label class="radio-item"><input type="radio" name="satisfied" value="시설"><span class="radio-label">3. 시설</span></label>
+          <label class="radio-item"><input type="radio" name="satisfied" value="기타"><span class="radio-label">4. 기타</span></label>
+        </div>
+        <div class="error-msg" id="err-satisfied">항목을 선택해 주세요</div>
+        <div class="etc-box" id="satisfiedEtcBox">
+          <textarea id="satisfiedEtcText" placeholder="기타 만족스러운 내용을 작성해 주세요"></textarea>
+        </div>
+      </div>
+      <div class="question">
+        <label class="q-label">개선점 및 불편사항<span class="required">*</span></label>
+        <div class="imp-cat">
+          <div class="imp-cat-title">① 교육 관련</div>
+          <div class="radio-row">
+            <label class="radio-item"><input type="radio" name="imp_edu" value="1"><span class="radio-label">1. 없음</span></label>
+            <label class="radio-item"><input type="radio" name="imp_edu" value="2"><span class="radio-label">2. 있음</span></label>
+          </div>
+          <div class="imp-textarea" id="imp_edu_box">
+            <textarea id="imp_edu_text" placeholder="교육 관련 개선점을 작성해 주세요"></textarea>
+          </div>
+        </div>
+        <div class="imp-cat">
+          <div class="imp-cat-title">② 시설 관련</div>
+          <div class="radio-row">
+            <label class="radio-item"><input type="radio" name="imp_facility" value="1"><span class="radio-label">1. 없음</span></label>
+            <label class="radio-item"><input type="radio" name="imp_facility" value="2"><span class="radio-label">2. 있음</span></label>
+          </div>
+          <div class="imp-textarea" id="imp_facility_box">
+            <textarea id="imp_facility_text" placeholder="시설 관련 개선점을 작성해 주세요"></textarea>
+          </div>
+        </div>
+        <div class="imp-cat">
+          <div class="imp-cat-title">③ 기타 의견</div>
+          <div class="radio-row">
+            <label class="radio-item"><input type="radio" name="imp_etc" value="1"><span class="radio-label">1. 없음</span></label>
+            <label class="radio-item"><input type="radio" name="imp_etc" value="2"><span class="radio-label">2. 있음</span></label>
+          </div>
+          <div class="imp-textarea" id="imp_etc_box">
+            <textarea id="imp_etc_text" placeholder="기타 의견을 작성해 주세요"></textarea>
+          </div>
+        </div>
+        <div class="error-msg" id="err-improvement">모든 항목을 선택해 주세요</div>
+      </div>
+    </div>
+
+    <button class="submit-btn" id="submitBtn">설문 제출하기</button>
+    <div class="debug-box" id="debugBox"></div>
+  </div>
+
+  <div class="complete-screen" id="completeScreen">
+    <div class="complete-icon">✓</div>
+    <h2>설문이 완료되었습니다</h2>
+    <p>소중한 의견을 보내주셔서 감사합니다.<br>더 나은 교육 서비스 제공을 위해<br>귀하의 의견을 적극 반영하겠습니다.</p>
+  </div>
+</div>
+
+<script>
+window.addEventListener('DOMContentLoaded', function() {
+
+  var SHEET_URL = 'https://script.google.com/macros/s/AKfycbwnQYYRocQD0hYFuXSqAjNX57Vobsh1XreqzAebMhBAsYYaoRWCJhXVO1VuDZ8ncCU/exec';
+  var BASE = 'https://ddyeonai.github.io/ts-survey/';
+  var ratings = {};
+
+  function getFaceUrl(v) {
+    return v <= 3 ? BASE+'sad.png' : v <= 6 ? BASE+'neutral.png' : BASE+'happy.png';
+  }
+
+  function setThumbImg(idx, val) {
+    var url = getFaceUrl(val);
+    var styleId = 'thumb-style-'+idx;
+    var el = document.getElementById(styleId);
+    if (!el) { el = document.createElement('style'); el.id = styleId; document.head.appendChild(el); }
+    var rule = 'background:url("'+url+'") center/contain no-repeat!important;background-color:transparent!important;';
+    el.textContent = '#sl'+idx+'::-webkit-slider-thumb{'+rule+'}#sl'+idx+'::-moz-range-thumb{'+rule+'}';
+  }
+
+  function onRate(idx, val) {
+    val = Math.min(10, Math.max(0, val));
+    ratings[idx] = String(val);
+    var hint = document.getElementById('hint'+idx);
+    var sc = document.getElementById('sc'+idx);
+    hint.style.display = 'none';
+    sc.style.display = 'block';
+    sc.innerHTML = val + '<span class="unit">점</span>';
+    setThumbImg(idx, val);
+    document.getElementById('err-r'+idx).classList.remove('show');
+  }
+
+  var qs = [
+    '교통안전체험교육센터의 서비스는 나의 이용 목적에 부합한다.',
+    '교통안전체험교육센터는 국가나 사회의 미래가치 창출을 위한 업무를 수행하고 있다.',
+    '교통안전체험교육센터의 교육이 타 공공기관 교육 대비 우수하다고 생각한다.',
+    '교통안전체험교육센터에서 제공하는 서비스는 이용하는데에 문제가 없다.',
+    '교통안전체험교육센터 직원들의 태도는 친절하고 만족스럽다.',
+    '교통안전체험교육센터는 필요한 정보나 업무처리결과를 분명하게 알려준다.',
+    '교통안전체험교육센터의 시설은 쾌적하다.',
+    '교육 수료 후 교통안전체험교육센터에 대해 긍정적으로 생각할 것이다.',
+    '교통안전체험교육센터 직원은 내가 필요한 서비스를 제공하기 위해 최선을 다한다.',
+    '교통안전체험교육센터의 교육 서비스는 전반적으로 만족스럽다.'
+  ];
+
+  var rc = document.getElementById('ratingContainer');
+  qs.forEach(function(q, i) {
+    var d = document.createElement('div');
+    d.className = 'rating-question';
+    d.id = 'rq'+i;
+    d.innerHTML =
+      '<div class="rating-label">'+(i+1)+'. '+q+'<span class="required">*</span></div>'+
+      '<div class="rating-display">'+
+        '<span class="rating-hint" id="hint'+i+'">슬라이더를 움직여 주세요</span>'+
+        '<span class="rating-score" id="sc'+i+'"></span>'+
+      '</div>'+
+      '<div class="slider-wrap">'+
+        '<input type="range" class="score-slider" id="sl'+i+'" min="0" max="10" step="1" value="5" data-idx="'+i+'">'+
+      '</div>'+
+      '<div class="slider-ticks"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>'+
+      '<div class="rating-legend"><span class="low">◀ 매우 불만족</span><span class="high">매우 만족 ▶</span></div>'+
+      '<div class="error-msg" id="err-r'+i+'">점수를 선택해 주세요</div>';
+    rc.appendChild(d);
+  });
+
+  rc.addEventListener('input', function(e) {
+    if (e.target.classList.contains('score-slider'))
+      onRate(parseInt(e.target.dataset.idx), parseInt(e.target.value));
+  });
+  rc.addEventListener('change', function(e) {
+    if (e.target.classList.contains('score-slider'))
+      onRate(parseInt(e.target.dataset.idx), parseInt(e.target.value));
+  });
+
+  for (var j = 0; j < qs.length; j++) {
+    var sl = document.getElementById('sl'+j);
+    sl.value = 5; sl.defaultValue = 5;
+    setThumbImg(j, 5);
+  }
+
+  document.getElementById('allSatisfiedBtn').addEventListener('click', function() {
+    for (var k = 0; k < qs.length; k++) {
+      document.getElementById('sl'+k).value = 10;
+      onRate(k, 10);
+    }
+  });
+
+  document.addEventListener('change', function(e) {
+    if (e.target.type === 'radio') {
+      var n = e.target.name;
+      document.querySelectorAll('input[name="'+n+'"]').forEach(function(r) {
+        r.closest('.radio-item').classList.toggle('checked', r.checked);
+      });
+    }
+  });
+
+  document.querySelectorAll('input[name="bizExp"]').forEach(function(r) {
+    r.addEventListener('change', function() {
+      document.getElementById('bizCareerBox').classList.toggle('show', ['1','2','3','4','5'].indexOf(this.value)>-1);
+    });
+  });
+  document.querySelectorAll('input[name="satisfied"]').forEach(function(r) {
+    r.addEventListener('change', function() {
+      document.getElementById('satisfiedEtcBox').classList.toggle('show', this.value==='기타');
+    });
+  });
+  ['imp_edu','imp_facility','imp_etc'].forEach(function(n) {
+    document.querySelectorAll('input[name="'+n+'"]').forEach(function(r) {
+      r.addEventListener('change', function() {
+        document.getElementById(n+'_box').classList.toggle('show', this.value==='2');
+      });
+    });
+  });
+
+  var t = new Date();
+  document.getElementById('eduDate').value = t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
+
+  document.getElementById('submitBtn').addEventListener('click', function() {
+    var debug = document.getElementById('debugBox');
+    debug.style.display = 'block';
+    debug.textContent = '검사 중...';
+
+    var hasError = false, firstEl = null;
+    function markErr(errId, focusId) {
+      document.getElementById(errId).classList.add('show');
+      if (!firstEl) firstEl = document.getElementById(focusId||errId);
+      hasError = true;
+    }
+
+    if (!document.getElementById('courseName').value) markErr('err-courseName','courseName');
+    if (!document.getElementById('eduDate').value) markErr('err-eduDate','eduDate');
+    if (!document.getElementById('age').value) markErr('err-age','age');
+    if (!document.querySelector('input[name="gender"]:checked')) markErr('err-gender','err-gender');
+
+    var bizCk = document.querySelector('input[name="bizExp"]:checked');
+    if (!bizCk) {
+      markErr('err-bizExp','err-bizExp');
+    } else if (['1','2','3','4','5'].indexOf(bizCk.value)>-1) {
+      if (!document.getElementById('bizYear').value && !document.getElementById('bizMonth').value)
+        markErr('err-bizExp','bizCareerBox');
+    }
+    if (!document.getElementById('privYear').value && !document.getElementById('privMonth').value)
+      markErr('err-privCareer','privYear');
+
+    for (var i=0; i<10; i++) {
+      if (!ratings[i]) markErr('err-r'+i,'rq'+i);
+    }
+
+    var satCk = document.querySelector('input[name="satisfied"]:checked');
+    if (!satCk) markErr('err-satisfied','err-satisfied');
+    else if (satCk.value==='기타' && !document.getElementById('satisfiedEtcText').value.trim())
+      markErr('err-satisfied','satisfiedEtcText');
+
+    var impErr = false;
+    ['imp_edu','imp_facility','imp_etc'].forEach(function(n) {
+      var ck = document.querySelector('input[name="'+n+'"]:checked');
+      if (!ck) impErr = true;
+      else if (ck.value==='2' && !document.getElementById(n+'_text').value.trim()) impErr = true;
+    });
+    if (impErr) markErr('err-improvement','err-improvement');
+
+    if (hasError) {
+      debug.textContent = '❌ 미입력 항목이 있어요. 빨간 항목을 확인해 주세요.';
+      if (firstEl) firstEl.scrollIntoView({behavior:'smooth',block:'center'});
+      return;
+    }
+
+    debug.textContent = '✅ 전송 중...';
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = '제출 중...';
+
+    var hasBiz = ['1','2','3','4','5'].indexOf(bizCk.value)>-1;
+    var bizM = hasBiz?(parseInt(document.getElementById('bizYear').value||'0')*12+parseInt(document.getElementById('bizMonth').value||'0')):'';
+    var privM = parseInt(document.getElementById('privYear').value||'0')*12+parseInt(document.getElementById('privMonth').value||'0');
+    var satText = satCk.value==='기타'?document.getElementById('satisfiedEtcText').value.trim():satCk.value;
+    var iEdu = document.querySelector('input[name="imp_edu"]:checked').value;
+    var iFac = document.querySelector('input[name="imp_facility"]:checked').value;
+    var iEtc = document.querySelector('input[name="imp_etc"]:checked').value;
+
+    var params = new URLSearchParams({
+      courseName: document.getElementById('courseName').value,
+      eduDate: document.getElementById('eduDate').value,
+      age: document.getElementById('age').value,
+      gender: document.querySelector('input[name="gender"]:checked').value,
+      bizExp: bizCk.value, bizMonths: bizM, privMonths: privM,
+      r1:ratings[0],r2:ratings[1],r3:ratings[2],r4:ratings[3],r5:ratings[4],
+      r6:ratings[5],r7:ratings[6],r8:ratings[7],r9:ratings[8],r10:ratings[9],
+      satisfiedText: satText,
+      imp_edu_yn:iEdu, imp_edu_text:iEdu==='2'?document.getElementById('imp_edu_text').value.trim():'',
+      imp_facility_yn:iFac, imp_facility_text:iFac==='2'?document.getElementById('imp_facility_text').value.trim():'',
+      imp_etc_yn:iEtc, imp_etc_text:iEtc==='2'?document.getElementById('imp_etc_text').value.trim():''
+    });
+
+    var img = new Image();
+    img.onload = img.onerror = function() {
+      document.getElementById('surveyForm').style.display='none';
+      document.getElementById('completeScreen').classList.add('show');
+      window.scrollTo({top:0,behavior:'smooth'});
+    };
+    img.src = SHEET_URL+'?'+params.toString();
+  });
+
+});
+</script>
+</body>
+</html>
